@@ -1,0 +1,42 @@
+import ldap
+
+# connection details for ldap server
+ldapsrv = "ldap://127.0.0.1:389/"
+
+binduser = "cn=dnsuser,dc=net"
+bindpw = "PasswordForUser"
+
+
+# search details for soa entries
+soabase = "cn=dns,ou=application,dc=net"
+soascope = ldap.SCOPE_ONELEVEL
+
+soafilter = "(objectClass=*)"
+soazone = ""
+soaprimary = ""
+soamail = ""
+soaserial = ""
+soarefresh = ""
+soaretry = ""
+soaexpire = ""
+soaminttl = ""
+
+# search details for entries
+entrybase = "ou=hosts,dc=net"
+entryscope = ldap.SCOPE_SUBTREE
+
+entryfilter = "(objectClass=*)"
+entryzone = ""
+entryhost = ""
+entrya = ""
+entryaaaa = ""
+entrycname = ""
+entrymx = ""
+entrytxt = ""
+entryns = ""
+
+# zone directory and a separate configuration file which includes the zones
+# DON'T USE named.conf DIRECTLY AS THE FILE WILL BE DELETED IN THE PROCESS
+zonedir = "/etc/named/"
+zoneconf = "/etc/named/zones.conf"
+
