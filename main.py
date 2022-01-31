@@ -7,6 +7,7 @@ import config
 
 # flags
 FLAG_DEBUG = False
+#FLAG_DEBUG = True
 FLAG_IGNORE_PRIMARY = True
 
 
@@ -119,12 +120,12 @@ for zone in zonelist:
     
     dntext = ""
     soatext = ""
-    nstext = ""
-    atext = ""
-    aaaatext = ""
-    cnametext = ""
-    txttext = ""
-    mxtext = ""
+    nstext = "; NS entries\n"
+    atext = "; A entries\n"
+    aaaatext = "; AAAA entries\n"
+    cnametext = "; CNAME entries\n"
+    txttext = "; TXT entries\n"
+    mxtext = "; MX entries\n"
     
     # ldap search for only entries within current zone
     
@@ -204,21 +205,22 @@ for zone in zonelist:
             for i in entry[1].get(recordtype):
                 #print("i: " + i.decode("utf-8"))
                 if recordtype == config.entryns:
-                    if host[-1] != ".":
-                        host = host + "."
+                    #if host[-1] != ".":
+                    #    host = host + "."
                     #print("NS: " + str((host, i.decode("utf-8"))))
                     nsrecords.append((host, i.decode("utf-8")))
                 elif recordtype == config.entrya:
                     #print("A: " + str((host, i.decode("utf-8"))))
                     arecords.append((host, i.decode("utf-8")))
                 elif recordtype == config.entryaaaa:
-                    continue
+                    aaaatext = aaaatext + "; not yet implemented\n"
                 elif recordtype == config.entrycname:
-                    continue
+                    #print("CNAME: " + str((host, i.decode("utf-8"))))
+                    cnamerecords.append((host, i.decode("utf-8")))
                 elif recordtype == config.entrytxt:
-                    continue
+                    txttext = txttext + "; not yet implemented\n"
                 elif recordtype == config.entrymx:
-                    continue
+                    mxtext = mxtext + "; not yet implemented\n"
     
     
     
@@ -228,11 +230,12 @@ for zone in zonelist:
     for record in arecords:
         atext = atext + record[0] + " IN A " + record[1] + "\n"
     
+    for record in cnamerecords:
+        cnametext = cnametext + record[0] + " IN CNAME " + record[1] + "\n"
     
     
     
-    
-    zonetext.insert(zoneindex, "$TTL 7200\n\n" + dntext + "\n" + soatext + "\n" + nstext + "\n" + atext + "\n" + aaaatext + "\n" + cnametext + "\n" + txttext + "\n" + mxtext + "\n")
+    zonetext.insert(zoneindex, "$TTL 7200\n\n" + dntext + "\n" + soatext + "\n\n" + nstext + "\n\n" + atext + "\n\n" + aaaatext + "\n\n" + cnametext + "\n\n" + txttext + "\n\n" + mxtext + "\n\n")
     
     if FLAG_DEBUG:
         print(zonetext[zoneindex])
@@ -246,4 +249,4 @@ for zone in zonelist:
     # zone "home.err0x5dd.de" { type master; file "/etc/named/home.err0x5dd.de.zone"; };
 
 # reload dns config
-os.system("systemctl reload named.service")
+os.system("rc-service named reload")
