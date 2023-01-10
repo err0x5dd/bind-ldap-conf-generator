@@ -213,7 +213,8 @@ for zone in zonelist:
                     #print("A: " + str((host, i.decode("utf-8"))))
                     arecords.append((host, i.decode("utf-8")))
                 elif recordtype == config.entryaaaa:
-                    aaaatext = aaaatext + "; not yet implemented\n"
+                    #print("AAAA: " + str((host, i.decode("utf-8"))))
+                    aaaarecords.append((host, i.decode("utf-8")))
                 elif recordtype == config.entrycname:
                     #print("CNAME: " + str((host, i.decode("utf-8"))))
                     cnamerecords.append((host, i.decode("utf-8")))
@@ -233,6 +234,8 @@ for zone in zonelist:
     for record in cnamerecords:
         cnametext = cnametext + record[0] + " IN CNAME " + record[1] + "\n"
     
+    for record in aaaarecords:
+        aaaatext = aaaatext + record[0] + " IN AAAA " + record[1] + "\n"
     
     
     zonetext.insert(zoneindex, "$TTL 7200\n\n" + dntext + "\n" + soatext + "\n\n" + nstext + "\n\n" + atext + "\n\n" + aaaatext + "\n\n" + cnametext + "\n\n" + txttext + "\n\n" + mxtext + "\n\n")
